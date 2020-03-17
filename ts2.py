@@ -48,7 +48,7 @@ def main():
 		print("Invalid arguments")
 		exit()
 
-	ts1ListenPort = int(sys.argv[1])
+	ts2ListenPort = int(sys.argv[1])
 
 	#create the socket
 	try:
@@ -58,14 +58,14 @@ def main():
 		exit()
 
 	#bind socket for listening
-	binding = ('', ts1ListenPort)
+	binding = ('', ts2ListenPort)
 	ss.bind(binding)
 
 	#listen for connection
 	ss.listen(1)
 	host = socket.gethostname()
 	print("TS host name: {}".format(host))
-	print("TS port: {}".format(ts1ListenPort))
+	print("TS port: {}".format(ts2ListenPort))
 
 	#localhost = socket.gethostbyname(host)
 
