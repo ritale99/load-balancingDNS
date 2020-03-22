@@ -7,28 +7,32 @@ fileName = "PROJ2-HNS.txt"
 resolved = open("RESOLVED.txt", "w+")
 
 def findHosts(clientSocket,tsListenPort):
-    #Send PROJI-HNS.txt one line at a time to server and receive output to print
+	#Send PROJI-HNS.txt one line at a time to server and receive output to print
 	fileObject = open(fileName, "r")
 	for line in fileObject:
 		#rstrip removes ALL trailing whitespace
 		line = line.rstrip()
 
 		clientSocket.send(line) #Send line and wait for response
+		print("Send: " + line)
+
 		data = clientSocket.recv(256)
 		
-        #check line below this
+		#check line below this
+		print("Received: " + data)
 		resolved.write(data + '\n')
-        
 
 	fileObject.close()
 	return
 
 def main():
-	#client takes in lsHostname lsListenPort tsListenPort
+	#client takes in lsHostname lsListenPort
 	if len(sys.argv) != 3:
+		print("Invalid arguments")
 		exit()
 
-	if not sys.argv[1].isdigit() or not sys.argv[2].isdigit():
+	if not sys.argv[2].isdigit():
+		print("Invalid arguments")
 		exit()
 
 	lsHostname = sys.argv[1]
