@@ -28,18 +28,38 @@ def handleQuery(inputString, connection):
 	#check if in dictionary of dns
 	#if in dictionary, send Hostname ip and A
 	#else, don't send anything
-	
+
 	#format to response message if ip found
-	#if not found, it will be formatted as the preset message
-	if inputString.lower in addresses:
+	if inputString.lower() in addresses:
 		response = inputString.lower() + " " + addresses[inputString] + " A"
-		connection.send(response.encode('utf-8'))
-	else:
-        #FIX THIS TO SEND NOTHING
-		response = inputString.lower()
+		print("Response: " + response)
+		connection.send(response)
+	return
+
+def handleLS():
+	# Wait for query, then handle
+	print("Awaiting LS")
+	connection, LSAddress = TS2LSSocket.accept()
+	print("Accepted LS")
+
+	while True:
+		data = connection.recv(256) #note, host names are assumed to be <200 chars
+
+		print("Received: " + data)
+
+		# Close connection if no message
+		if len(data) == 0:
+			print("No message, closing connection")
+			break
+
+		# Handle message and reply
+		handleQuery(data, connection)
+
 	return
 
 def main():
+	global TS2LSSocket
+
 	if len(sys.argv) != 2:
 		print("Invalid arguments")
 		exit()
@@ -48,40 +68,36 @@ def main():
 		print("Invalid arguments")
 		exit()
 
-	ts2ListenPort = int(sys.argv[1])
+	tsListenPort = int(sys.argv[1])
 
 	#create the socket
 	try:
-		ss = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		TS2LSSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	except socket.error as err:
 		print('TS socket open error: {}'.format(err))
 		exit()
 
 	#bind socket for listening
-	binding = ('', ts2ListenPort)
-	ss.bind(binding)
+	binding = ('', tsListenPort)
+	TS2LSSocket.bind(binding)
 
 	#listen for connection
-	ss.listen(1)
+	TS2LSSocket.listen(1)
 	host = socket.gethostname()
 	print("TS host name: {}".format(host))
-	print("TS port: {}".format(ts2ListenPort))
+	print("TS port: {}".format(tsListenPort))
 
 	#localhost = socket.gethostbyname(host)
 
 	#Load data
 	buildData()
 
-	#receive query on loop
+	# wait for and handle ls one at a time
 	while True:
-		#accept connection
-		connection, cAddress = ss.accept()
-		print ("[S]: Got a connection request from a client at {}".format(cAddress))
-		data = connection.recv(256) #note, host names are assumed to be <200 chars
-		handleQuery(data, connection)
+		handleLS()
 
 	# Close the server socket, never?
-	ss.close()
+	TS2LSSocket.close()
 	exit()
 
 main()

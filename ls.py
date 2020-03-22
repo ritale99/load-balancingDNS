@@ -44,12 +44,11 @@ def handleQuery(message):
 	# is this necessary?
 
 	# send message to both TS
-#	serverToTS1Socket.send(message)
-#	serverToTS2Socket.send(message)
+	serverToTS1Socket.send(message)
+	serverToTS2Socket.send(message)
 
 	# wait for first response or 5 seconds
-#	readable = select.select([serverToTS1Socket, serverToTS2Socket], [], [], timeout)
-	readable = select.select([], [], [], timeout)
+	readable = select.select([serverToTS1Socket, serverToTS2Socket], [], [], timeout)
 	if readable[0]:
 		return readable[0][0].recv(256)
 	else:
@@ -112,7 +111,7 @@ def main():
 	serverToClientSocket.bind(binding)
 
 	# create and connect to TS1 and TS2
-#	connectToTS()
+	connectToTS()
 
 	while True:
 		# wait for and handle clients one at a time
