@@ -32,7 +32,6 @@ def handleQuery(inputString, connection):
 	#format to response message if ip found
 	if inputString.lower() in addresses:
 		response = inputString.lower() + " " + addresses[inputString] + " A"
-		print("Response: " + response)
 		connection.send(response)
 	return
 
@@ -45,11 +44,8 @@ def handleLS():
 	while True:
 		data = connection.recv(256) #note, host names are assumed to be <200 chars
 
-		print("Received: " + data)
-
 		# Close connection if no message
 		if len(data) == 0:
-			print("No message, closing connection")
 			break
 
 		# Handle message and reply

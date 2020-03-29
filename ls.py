@@ -66,16 +66,13 @@ def handleClient():
 	while readable[0]:
 		# receive from client
 		message = clientConnection.recv(256)
-		print("Received: " + message)
 
 		# close connection if no message
 		if len(message) == 0:
-			print("No message, closing connection")
 			break;
 
 		# handle message and reply
 		response = handleQuery(message)
-		print("Responding: " + response)
 		clientConnection.send(response)
 
 		# waits up to 5 seconds for next message

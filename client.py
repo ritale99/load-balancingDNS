@@ -14,12 +14,10 @@ def findHosts(clientSocket,tsListenPort):
 		line = line.rstrip()
 
 		clientSocket.send(line) #Send line and wait for response
-		print("Send: " + line)
 
 		data = clientSocket.recv(256)
 		
 		#check line below this
-		print("Received: " + data)
 		resolved.write(data + '\n')
 
 	fileObject.close()
